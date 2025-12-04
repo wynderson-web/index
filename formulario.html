@@ -1,0 +1,377 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Consulta Zapisp - Convites</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        
+        .form-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 500px;
+            width: 100%;
+            padding: 50px 40px;
+            animation: slideUp 0.5s ease;
+        }
+        
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        .logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        
+        .logo-icon {
+            font-size: 60px;
+            margin-bottom: 15px;
+        }
+        
+        h1 {
+            color: #1f2937;
+            text-align: center;
+            margin-bottom: 10px;
+            font-size: 28px;
+            font-weight: 700;
+        }
+        
+        .subtitle {
+            text-align: center;
+            color: #6b7280;
+            margin-bottom: 35px;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        label {
+            display: block;
+            color: #374151;
+            font-weight: 600;
+            margin-bottom: 10px;
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        
+        input[type="text"] {
+            width: 100%;
+            padding: 16px;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+            font-family: 'Courier New', monospace;
+            letter-spacing: 1px;
+        }
+        
+        input[type="text"]:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 4px rgba(102, 126, 234, 0.1);
+        }
+        
+        .hint {
+            color: #6b7280;
+            font-size: 12px;
+            margin-top: 8px;
+            line-height: 1.5;
+        }
+        
+        .hint strong {
+            color: #374151;
+        }
+        
+        button {
+            width: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 18px;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            margin-top: 10px;
+        }
+        
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(102, 126, 234, 0.4);
+        }
+        
+        button:active {
+            transform: translateY(0);
+        }
+        
+        button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        
+        .loading {
+            display: none;
+            text-align: center;
+            margin-top: 20px;
+            color: #6b7280;
+            font-size: 14px;
+        }
+        
+        .loading.show {
+            display: block;
+        }
+        
+        .loading-spinner {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid #e5e7eb;
+            border-top-color: #667eea;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .error-message {
+            background: #fef2f2;
+            border-left: 4px solid #ef4444;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-top: 15px;
+            display: none;
+        }
+        
+        .error-message.show {
+            display: block;
+        }
+        
+        .error-message p {
+            color: #991b1b;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .footer {
+            text-align: center;
+            margin-top: 30px;
+            padding-top: 25px;
+            border-top: 1px solid #e5e7eb;
+        }
+        
+        .footer-text {
+            color: #9ca3af;
+            font-size: 12px;
+        }
+        
+        @media (max-width: 480px) {
+            .form-container {
+                padding: 35px 25px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+            
+            .logo-icon {
+                font-size: 50px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="form-container">
+        <div class="logo">
+            <div class="logo-icon">🔍</div>
+            <h1>Consulta Zapisp</h1>
+            <p class="subtitle">Sistema de consulta de convites<br>Digite o telefone para buscar</p>
+        </div>
+        
+        <form id="consultaForm">
+            <div class="form-group">
+                <label for="telefone">Número de Telefone</label>
+                <input 
+                    type="text" 
+                    id="telefone" 
+                    name="telefone" 
+                    placeholder="5511912345678"
+                    required
+                    maxlength="13"
+                    autocomplete="off"
+                >
+                <div class="hint">
+                    <strong>Formato:</strong> 55 + DDD (2) + 9 + Número (8)<br>
+                    <strong>Exemplo:</strong> 5511912345678 (13 dígitos)
+                </div>
+            </div>
+            
+            <button type="submit" id="btnSubmit">
+                🚀 Consultar Agora
+            </button>
+            
+            <div class="error-message" id="errorMessage">
+                <p id="errorText"></p>
+            </div>
+            
+            <div class="loading" id="loading">
+                <span class="loading-spinner"></span>
+                <span>Consultando API Zapisp...</span>
+            </div>
+        </form>
+        
+        <div class="footer">
+            <p class="footer-text">Powered by N8N + Zapisp API</p>
+        </div>
+    </div>
+
+    <script>
+        // ⚠️ CONFIGURAÇÃO OBRIGATÓRIA ⚠️
+        // Substitua pela URL real do seu webhook N8N
+        const WEBHOOK_URL = 'https://expensiveclam-n8n.cloudfy.live/webhook/consulta-zapisp';
+        
+        // Elementos DOM
+        const form = document.getElementById('consultaForm');
+        const telefoneInput = document.getElementById('telefone');
+        const btnSubmit = document.getElementById('btnSubmit');
+        const loading = document.getElementById('loading');
+        const errorMessage = document.getElementById('errorMessage');
+        const errorText = document.getElementById('errorText');
+        
+        // Permitir apenas números no campo
+        telefoneInput.addEventListener('input', (e) => {
+            e.target.value = e.target.value.replace(/\D/g, '');
+        });
+        
+        // Função para mostrar erro
+        function mostrarErro(mensagem) {
+            errorText.textContent = mensagem;
+            errorMessage.classList.add('show');
+            setTimeout(() => {
+                errorMessage.classList.remove('show');
+            }, 5000);
+        }
+        
+        // Função para validar telefone
+        function validarTelefone(telefone) {
+            if (telefone.length !== 13) {
+                return 'O telefone deve ter exatamente 13 dígitos!';
+            }
+            
+            if (!telefone.startsWith('55')) {
+                return 'O telefone deve começar com 55 (código do Brasil)!';
+            }
+            
+            const ddd = telefone.substring(2, 4);
+            const nono = telefone.charAt(4);
+            
+            if (nono !== '9') {
+                return 'O telefone celular deve ter o 9 após o DDD!';
+            }
+            
+            return null; // Válido
+        }
+        
+        // Enviar formulário
+        form.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            // Limpar mensagens anteriores
+            errorMessage.classList.remove('show');
+            
+            const telefone = telefoneInput.value.trim();
+            
+            // Validar telefone
+            const erroValidacao = validarTelefone(telefone);
+            if (erroValidacao) {
+                mostrarErro(erroValidacao);
+                return;
+            }
+            
+            // Mostrar loading
+            btnSubmit.disabled = true;
+            btnSubmit.textContent = 'CONSULTANDO...';
+            loading.classList.add('show');
+            
+            try {
+                // Fazer requisição POST para o webhook
+                const response = await fetch(WEBHOOK_URL, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        telefone: telefone
+                    })
+                });
+                
+                if (!response.ok) {
+                    throw new Error('Erro na comunicação com o servidor');
+                }
+                
+                // Pegar HTML de resposta
+                const html = await response.text();
+                
+                // Substituir página atual pelo resultado
+                document.open();
+                document.write(html);
+                document.close();
+                
+            } catch (error) {
+                console.error('Erro:', error);
+                mostrarErro('❌ Erro ao consultar. Verifique sua conexão e tente novamente.');
+                
+                // Restaurar botão
+                btnSubmit.disabled = false;
+                btnSubmit.textContent = '🚀 CONSULTAR AGORA';
+                loading.classList.remove('show');
+            }
+        });
+        
+        // Adicionar efeito visual ao digitar
+        telefoneInput.addEventListener('input', (e) => {
+            const value = e.target.value;
+            if (value.length === 13) {
+                telefoneInput.style.borderColor = '#10b981';
+            } else {
+                telefoneInput.style.borderColor = '#e5e7eb';
+            }
+        });
+    </script>
+</body>
+</html>
